@@ -6,14 +6,10 @@
 
 -- (This is easiest to play on iPad or other large devices, but should work on all iOS and Android devices)
 -- 
--- Version: 1.0
+-- Version: 1.1
 -- 
 -- Sample code is MIT licensed, see http://developer.anscamobile.com/code/license
 -- Copyright (C) 2010 ANSCA Inc. All Rights Reserved.
-
-
-
-
 
 module(..., package.seeall)
 
@@ -27,9 +23,10 @@ module(..., package.seeall)
 
 -- Main function - MUST return a display.newGroup()
 function new()
+	
 	local menuGroup = display.newGroup()
 	
-	local ui = require("ui")
+	local ui = ui --require("ui")
 	local ghostTween
 	local ofTween
 	local playTween
@@ -40,6 +37,7 @@ function new()
 	--local backgroundSound = audio.loadStream( "rainsound.mp3" )	--> This is how you'd load music
 	
 	local drawScreen = function()
+		
 		-- BACKGROUND IMAGE
 		local backgroundImage = display.newImageRect( "mainmenu.png", 480, 320 )
 		backgroundImage.x = 240; backgroundImage.y = 160
@@ -208,11 +206,11 @@ function new()
 						audio.play( tapSound )
 						
 						-- unload level selection screen
-						levelSelectionBg:removeSelf(); levelSelectionBg = nil
-						level1Btn:removeSelf(); level1Btn = nil
-						level2Btn:removeSelf(); level2Btn = nil
-						shadeRect:removeSelf(); shadeRect = nil
-						closeBtn:removeSelf(); closeBtn = nil
+						display.remove( levelSelectionBg ); levelSelectionBg = nil
+						display.remove( level1Btn ); level1Btn = nil
+						display.remove( level2Btn ); level2Btn = nil
+						display.remove( shadeRect ); shadeRect = nil
+						display.remove( closeBtn ); closeBtn = nil
 						
 						isLevelSelection = false
 						playBtn.isActive = true
@@ -285,12 +283,36 @@ function new()
 	drawScreen()
 	--audio.play( backgroundSound, { channel=1, loops=-1, fadein=5000 }  )
 	
-	unloadMe = function()
+	--[[
+	local monitorMem = function()
+		collectgarbage()
+	  	print( "\nMemUsage: " .. collectgarbage("count") )
+	  
+	  	local textMem = system.getInfo( "textureMemoryUsed" ) / 1000000
+	  	print( "TexMem:   " .. textMem )
+	end
+	
+	Runtime:addEventListener( "enterFrame", monitorMem )
+	]]--
+	
+	local cleanSounds = function()
+		audio.stop()
+		
+		if tapSound then
+			audio.dispose( tapSound )
+			tapSound = nil
+		end
+	end
+	
+	clean = function()
+		
+		--Runtime:removeEventListener( "enterFrame", monitorMem )
+		
 		if ghostTween then transition.cancel( ghostTween ); end
 		if ofTween then transition.cancel( ofTween ); end
 		if playTween then transition.cancel( playTween ); end
 		
-		--if tapSound then audio.dispose( tapSound ); end
+		cleanSounds()
 	end
 	
 	-- MUST return a display.newGroup()

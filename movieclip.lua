@@ -47,7 +47,6 @@
 
 module(..., package.seeall)
 
-
 function newAnim (imageTable,width,height)
 
 	-- Set up graphics
@@ -285,7 +284,7 @@ function newAnim (imageTable,width,height)
 
 	
 		self.repeatFunction = nextFrame
-		Runtime:addEventListener( "enterFrame", self )
+		--Runtime:addEventListener( "enterFrame", self )
 	end
 	
 	
@@ -323,7 +322,7 @@ function newAnim (imageTable,width,height)
 		animFrames[startFrame].isVisible = true 
 		
 		self.repeatFunction = prevFrame
-		Runtime:addEventListener( "enterFrame", self )
+		--Runtime:addEventListener( "enterFrame", self )
 	end
 
 	
@@ -406,7 +405,7 @@ function newAnim (imageTable,width,height)
 			end
 		end
 		self.repeatFunction = nextFrame
-		Runtime:addEventListener( "enterFrame", self )
+		--Runtime:addEventListener( "enterFrame", self )
 	end
 
 

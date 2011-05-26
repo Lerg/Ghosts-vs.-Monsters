@@ -5,13 +5,10 @@
 
 -- (This is easiest to play on iPad or other large devices, but should work on all iOS and Android devices)
 -- 
--- Version: 1.0
+-- Version: 1.1
 -- 
 -- Sample code is MIT licensed, see http://developer.anscamobile.com/code/license
 -- Copyright (C) 2010 ANSCA Inc. All Rights Reserved.
-
-
-
 
 module(..., package.seeall)
 
@@ -35,11 +32,13 @@ function new()
 	
 	showLoadingScreen()
 	
-	unloadMe = function()
+	clean = function()
+		
 		if theTimer then timer.cancel( theTimer ); end
 		
 		if loadingImage then
-			loadingImage:removeSelf()
+			--loadingImage:removeSelf()
+			display.remove( loadingImage )
 			loadingImage = nil
 		end
 	end

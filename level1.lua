@@ -5,13 +5,10 @@
 
 -- (This is easiest to play on iPad or other large devices, but should work on all iOS and Android devices)
 -- 
--- Version: 1.0
+-- Version: 1.1
 -- 
 -- Sample code is MIT licensed, see http://developer.anscamobile.com/code/license
 -- Copyright (C) 2010 ANSCA Inc. All Rights Reserved.
-
-
-
 
 module(..., package.seeall)
 
@@ -29,6 +26,7 @@ module(..., package.seeall)
 
 -- Main function - MUST return a display.newGroup()
 function new()
+	
 	local hudGroup = display.newGroup()
 	
 	local gameGroup = display.newGroup()
@@ -45,9 +43,9 @@ function new()
 	
 	-- EXTERNAL MODULES / LIBRARIES
 	
-	local movieclip = require( "movieclip" )
+	local movieclip = movieclip --require( "movieclip" )
 	local physics = require "physics"
-	local ui = require("ui")
+	local ui = ui --require("ui")
 	--local facebook = require "facebook"
 	
 	local mCeil = math.ceil
@@ -526,7 +524,8 @@ function new()
 			scoreText:toFront()
 			timer.performWithDelay( 1000, function() scoreText.isVisible = true; end, 1 )
 		else
-			scoreText:removeSelf()
+			--scoreText:removeSelf()
+			display.remove( scoreText )
 			scoreText = nil
 		end
 		
@@ -817,7 +816,8 @@ function new()
 				else
 					
 					if shadeRect then
-						shadeRect:removeSelf()
+						--shadeRect:removeSelf()
+						display.remove( shadeRect )
 						shadeRect = nil
 					end
 					
@@ -1586,7 +1586,72 @@ function new()
 		local startTimer = timer.performWithDelay( 2000, function() startNewRound(); end, 1 )
 	end
 	
-	unloadMe = function()
+	--[[
+	local monitorMem = function()
+		collectgarbage()
+	  	print( "\nMemUsage: " .. collectgarbage("count") )
+	  
+	  	local textMem = system.getInfo( "textureMemoryUsed" ) / 1000000
+	  	print( "TexMem:   " .. textMem )
+	end
+	
+	Runtime:addEventListener( "enterFrame", monitorMem )
+	]]--
+	
+	local cleanSounds = function()
+		
+		audio.stop()
+		
+		if tapSound then
+			audio.dispose( tapSound )
+			tapSound = nil
+		end
+		
+		if blastOffSound then
+			audio.dispose( blastOffSound )
+			blastOffSound = nil
+		end
+		
+		if ghostPoofSound then
+			audio.dispose( ghostPoofSound )
+			ghostPoofSound = nil
+		end
+		
+		if monsterPoofSound then
+			audio.dispose( monsterPoofSound )
+			monsterPoofSound = nil
+		end
+		
+		if impactSound then
+			audio.dispose( impactSound )
+			impactSound = nil
+		end
+		
+		if weeSound then
+			audio.dispose( weeSound )
+			weeSound = nil
+		end
+		
+		if newRoundSound then
+			audio.dispose( newRoundSound )
+			newRoundSound = nil
+		end
+		
+		if youWinSound then
+			audio.dispose( youWinSound )
+			youWinSound = nil
+		end
+		
+		if youLoseSound then
+			audio.dispose( youLoseSound )
+			youLoseSound = nil
+		end
+	end
+	
+	clean = function()
+		
+		--Runtime:removeEventListener( "enterFrame", monitorMem )
+		
 		-- STOP PHYSICS ENGINE
 		physics.stop()
 		
@@ -1602,6 +1667,22 @@ function new()
 			child = nil
 		end
 		
+		--hudGroup:removeSelf()
+		display.remove( hudGroup )
+		hudGroup = nil
+		
+		if trailGroup then
+			--trailGroup:removeSelf()
+			display.remove( trailGroup )
+			trailGroup = nil
+		end
+		
+		if levelGroup then
+			--levelGroup:removeSelf()
+			display.remove( levelGroup )
+			levelGroup = nil
+		end
+		
 		-- Stop any transitions
 		if ghostTween then transition.cancel( ghostTween ); end
 		if poofTween then transition.cancel( poofTween ); end
@@ -1610,6 +1691,9 @@ function new()
 		-- Stop any timers
 		if restartTimer then timer.cancel( restartTimer ); end
 		if continueTimer then timer.cancel( continueTimer ); end
+		
+		-- unload audio files from memory
+		cleanSounds()
 	end
 	
 	gameInit()

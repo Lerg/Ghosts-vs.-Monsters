@@ -144,19 +144,25 @@ function newButton( params )
 	
 		local labelText = self.text
 		if ( labelText ) then
-			labelText:removeSelf()
+			--labelText:removeSelf()
+			display.remove( labelText )
+			labelText = nil
 			self.text = nil
 		end
 
 		local labelShadow = self.shadow
 		if ( labelShadow ) then
-			labelShadow:removeSelf()
+			--labelShadow:removeSelf()
+			display.remove( labelShadow )
+			labelShadow = nil
 			self.shadow = nil
 		end
 
 		local labelHighlight = self.highlight
 		if ( labelHighlight ) then
-			labelHighlight:removeSelf()
+			--labelHighlight:removeSelf()
+			display.remove( labelHighlight )
+			labelHighlight = nil
 			self.highlight = nil
 		end
 		
