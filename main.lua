@@ -1,56 +1,36 @@
--- 
--- Abstract: Ghosts Vs Monsters sample project 
+--
+-- Abstract: Ghosts Vs Monsters sample project
 -- Designed and created by Jonathan and Biffy Beebe of Beebe Games exclusively for Ansca, Inc.
 -- http://beebegamesonline.appspot.com/
+--
+-- Remastered version
 
--- (This is easiest to play on iPad or other large devices, but should work on all iOS and Android devices)
--- 
--- Version: 1.1
--- 
+-- Version: 2.0
+--
 -- Sample code is MIT licensed, see http://developer.anscamobile.com/code/license
 -- Copyright (C) 2010 ANSCA Inc. All Rights Reserved.
 
--- SOME INITIAL SETTINGS
-display.setStatusBar( display.HiddenStatusBar ) --Hide status bar from the beginning
+-- Hide status bar
+display.setStatusBar(display.HiddenStatusBar)
 
-local oldTimerCancel = timer.cancel
-timer.cancel = function(t) if t then oldTimerCancel(t) end end
-
-local oldRemove = display.remove
-display.remove = function( o )
-	if o ~= nil then
-		
-		Runtime:removeEventListener( "enterFrame", o )
-		oldRemove( o )
-		o = nil
+-- Fix
+easing.continuousLoop = function(t, tMax, start, delta)
+	local interval = t / tMax
+	if interval < 0.5 then
+		return start + delta * interval * 2
+	else
+		return start + delta * (1 - interval) * 2
 	end
 end
 
+local composer = require('composer')
+composer.recycleOnSceneChange = true
+composer.setVariable('levelCount', 2)
 
--- Import director class
-local director = require("director")
-ui = require( "ui" )
-movieclip = require( "movieclip" )
+local sounds = require('libs.sounds')
+sounds.isSoundOn = true
+sounds.isMusicOn = true
 
--- Create a main group
-local mainGroup = display.newGroup()
-
--- Main function
-local function main()
-	
-	-- Add the group from director class
-	mainGroup:insert(director.directorView)
-	
-	-- Uncomment below code and replace init() arguments with valid ones to enable openfeint
-	--[[
-	openfeint = require ("openfeint")
-	openfeint.init( "App Key Here", "App Secret Here", "Ghosts vs. Monsters", "App ID Here" )
-	]]--
-	
-	director:changeScene( "loadmainmenu" )
-	
-	return true
-end
-
--- Begin
-main()
+-- TODO: add loading.png
+-- Load and show Main Menu scene
+composer.gotoScene('scenes.menu')
